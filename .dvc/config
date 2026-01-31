@@ -1,0 +1,6 @@
+[core]
+    remote = s3remote_for_sd_data_1
+['remote "s3remote_for_sd_data"']
+    url = 3://dvc-stable-defusion-training-dataset
+['remote "s3remote_for_sd_data_1"']
+    url = s3://dvc-stable-defusion-training-dataset

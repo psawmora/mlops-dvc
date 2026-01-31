@@ -1,0 +1,15 @@
+# Fixed version to satisfy both Datasets and DVC
+fsspec[http]==2025.10.0
+s3fs==2025.10.0
+
+# Core libraries
+datasets>=3.0.0
+dvc
+dvc-s3
+
+# The rest of your stack
+huggingface_hub[cli]
+pillow
+numpy>=2.0.0
+pandas>=3.0.0
+torch>=2.10.0
