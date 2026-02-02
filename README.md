@@ -15,7 +15,7 @@ aws sts assume-role \
   --profile s3-bucket-admin \
   --role-arn "arn:aws:iam::164788107070:role/$ROLE_NAME" \
   --role-session-name "s3-bucket-admin-$(date +%s)" \
-  --external-id "$EXTERNAL_ID" >> credential.json
+  --external-id "$EXTERNAL_ID" > credential.json
 
 CREDS_JSON="$(cat credential.json)"
 
@@ -34,6 +34,7 @@ aws sts get-caller-identity
 - List remotes > dvc remote list
   output - s3remote_for_sd_data s3://psaw-data-lake-bucket-1    (default)
 - dvc remote add -d s3remote_for_sd_data s3://dvc-stable-defusion-training-dataset
+- dvc remote add -d s3remote_for_sd_data_1 s3://dvc-stable-defusion-training-dataset
 
 ### DVC configure S3 Credentials
 Just exporting AWS credential into environment variables is enough.
@@ -50,3 +51,23 @@ or change the AWS profile
 ### DVC change remote S3 URL
 dvc remote modify s3remote_for_sd_data --unset endpoint
 dvc remote modify s3remote_for_sd_data endpointurl s3://dvc-stable-defusion-training-dataset
+
+
+### DVC enable auto staging changes to GIT
+
+dvc config core.autostage true
+
+
+## What DVC-generated files mean (quick recap)
+
+1. data/images/*.dvc or data/images.dvc
+→ metadata pointers (hashes) to your images. Commit to Git.
+
+2. data/images/.gitignore
+→ prevents Git from tracking the image binaries. Commit to Git.
+
+3. .dvc/config
+→ remote settings like S3 path. Commit to Git (no secrets).
+
+4. .dvc/cache/
+→ actual content-addressed blobs. Never commit. This is what gets pushed to S3.
